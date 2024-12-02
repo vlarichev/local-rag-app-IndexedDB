@@ -1,0 +1,32 @@
+{
+  "name": "local-rag-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "13.5.6",
+    "react": "^18",
+    "react-dom": "^18",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "idb": "^8.0.0",
+    "lucide-react": "^0.350.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5",
+    "eslint": "^8",
+    "eslint-config-next": "13.5.6"
+  },
+  "browser": {
+    "onnxruntime-node": false
+  }
+}
