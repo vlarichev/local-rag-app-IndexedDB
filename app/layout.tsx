@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import './globals.css';
+import { Inter } from 'next/font/google';
+import { ThemeProvider } from 'next-themes';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: "Local RAG Demo",
-  description: "Browser-based RAG implementation using IndexedDB",
+export const metadata = {
+  title: 'Local Vector Database',
+  description: 'A fully client-side vector search application using Next.js and IndexedDB',
 };
 
 export default function RootLayout({
@@ -17,13 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-neutral-50 text-neutral-900 flex flex-col min-h-screen`}>
-        <Header />
-        <main className="flex-grow container mx-auto px-4 py-8">
-          {children}
-        </main>
-        <Footer />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-neutral-50 dark:bg-neutral-900 min-h-screen flex flex-col`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Header />
+          <main className="flex-grow container mx-auto px-4 py-8">
+            {children}
+          </main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
