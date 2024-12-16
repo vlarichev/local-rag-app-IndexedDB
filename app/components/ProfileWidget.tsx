@@ -8,7 +8,7 @@ export default function ProfileWidget() {
     <div className="flex items-center space-x-4 bg-white/50 dark:bg-neutral-800/50 backdrop-blur-sm rounded-xl p-3 shadow-modern">
       <div className="relative w-16 h-16 rounded-full overflow-hidden">
         <Image
-          src="/static/1722262259596.jpg"
+          src="/vlad-larichev.jpg"
           alt="Vlad Larichev"
           fill
           className="object-cover"

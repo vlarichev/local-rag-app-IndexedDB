@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MessageSquare, Send, Bot, User, Loader2 } from 'lucide-react';
 import { BrowserVectorStore } from '../../lib/vectorStore';
 
@@ -9,16 +9,26 @@ type Message = {
   content: string;
 };
 
-const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [apiKey, setApiKey] = useState<string>('');
+
+  useEffect(() => {
+    const savedApiKey = localStorage.getItem('openai_api_key');
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    }
+  }, []);
 
   const generatePrompt = async (query: string) => {
-    const vectorStore = await BrowserVectorStore.getInstance();
+    if (!apiKey) {
+      throw new Error('Please add your OpenAI API key in settings first.');
+    }
+
+    const vectorStore = await BrowserVectorStore.getInstance(apiKey);
     const results = await vectorStore.similaritySearch(query);
     
     // Create context from relevant documents
@@ -47,6 +57,11 @@ ${context}`
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
+    if (!apiKey) {
+      setError('Please add your OpenAI API key in settings first.');
+      return;
+    }
+
     const userMessage = { role: 'user' as const, content: input };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
@@ -56,15 +71,11 @@ ${context}`
     try {
       const prompt = await generatePrompt(input);
       
-      if (!OPENAI_API_KEY) {
-        throw new Error('OpenAI API key is not configured. Please add it to your .env file.');
-      }
-      
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
@@ -172,7 +183,7 @@ ${context}`
           />
           <button
             type="submit"
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || !input.trim() || !apiKey}
             className="px-4 py-3 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-lg disabled:opacity-50 transition-colors flex items-center space-x-2"
           >
             <Send className="w-5 h-5" />
