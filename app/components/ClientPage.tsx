@@ -15,12 +15,22 @@ export default function ClientPage() {
 
   useEffect(() => {
     const initVectorStore = async () => {
-      const store = await BrowserVectorStore.getInstance();
-      setVectorStore(store);
+      const apiKey = localStorage.getItem('openai-api-key');
+      if (!apiKey) {
+        console.warn('OpenAI API key not found in localStorage');
+        return;
+      }
       
-      // Get initial document count
-      const documents = await store.getAllDocuments();
-      setDocumentCount(documents.length);
+      try {
+        const store = await BrowserVectorStore.getInstance(apiKey);
+        setVectorStore(store);
+        
+        // Get initial document count
+        const documents = await store.getAllDocuments();
+        setDocumentCount(documents.length);
+      } catch (error) {
+        console.error('Error initializing vector store:', error);
+      }
     };
     initVectorStore();
   }, []);

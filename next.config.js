@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  output: 'standalone',
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -21,7 +22,6 @@ const nextConfig = {
     config.module.rules.push({
       test: /\.node$/,
       use: 'node-loader',
-      type: 'javascript/auto',
     });
 
     return config;
