@@ -125,23 +125,21 @@ export default function VectorStoreApp() {
   };
 
   const handleClearDocuments = async () => {
-    setShowConfirmDialog(true);
-  };
-
-  const confirmClearDocuments = async () => {
-    setIsLoading(true);
-    setLoadingMessage('Clearing documents...');
+    if (!vectorStore) return;
+    
     try {
-      await vectorStore.clearDocuments();
-      setResults([]);
+      setIsLoading(true);
+      setLoadingMessage('Clearing documents...');
+      await vectorStore.clearAllDocuments();
       setDocumentCount(0);
+      setResults([]);
     } catch (error) {
       console.error('Error clearing documents:', error);
       alert('Error clearing documents. Please try again.');
+    } finally {
+      setIsLoading(false);
+      setLoadingMessage('');
     }
-    setIsLoading(false);
-    setLoadingMessage('');
-    setShowConfirmDialog(false);
   };
 
   return (
