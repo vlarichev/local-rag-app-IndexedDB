@@ -15,7 +15,7 @@ export default function ClientPage() {
 
   useEffect(() => {
     const initVectorStore = async () => {
-      const apiKey = localStorage.getItem('openai-api-key');
+      const apiKey = localStorage.getItem('openai_api_key');
       if (!apiKey) {
         console.warn('OpenAI API key not found in localStorage');
         return;
@@ -30,6 +30,7 @@ export default function ClientPage() {
         setDocumentCount(documents.length);
       } catch (error) {
         console.error('Error initializing vector store:', error);
+        alert('Error initializing vector store. Please check your API key.');
       }
     };
     initVectorStore();
@@ -68,15 +69,19 @@ export default function ClientPage() {
   const handleClear = async () => {
     if (!vectorStore) return;
     
-    setIsLoading(true);
-    try {
-      await vectorStore.clearStore();
-      setResults([]);
-      setDocumentCount(0);
-    } catch (error) {
-      console.error('Error clearing store:', error);
+    if (confirm('Are you sure you want to clear all documents? This action cannot be undone.')) {
+      setIsLoading(true);
+      try {
+        await vectorStore.clearStore();
+        setResults([]);
+        setDocumentCount(0);
+      } catch (error) {
+        console.error('Error clearing store:', error);
+        alert('Error clearing documents. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
     }
-    setIsLoading(false);
   };
 
   return (
